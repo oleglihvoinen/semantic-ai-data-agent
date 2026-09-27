@@ -4,7 +4,7 @@ A **governed semantic access layer for AI-driven analytics** that prevents unres
 
 ![Architecture](https://raw.githubusercontent.com/oleglihvoinen/oleglihvoinen.github.io/main/assets/architecture/semantic-ai-data-agent.png)
 
-## Executive summary
+## Summary
 
 The design places a formal semantic and governance boundary between natural-language requests and physical data models. AI can interpret user intent and invoke tools, but approved metric definitions, allowed dimensions and ownership rules determine what constitutes a valid analytical request.
 
