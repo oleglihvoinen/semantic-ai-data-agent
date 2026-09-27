@@ -2,6 +2,8 @@
 
 A reference implementation of a **governed semantic boundary for AI-driven analytics**. Instead of giving an LLM unrestricted access to warehouse tables, the application exposes approved metrics, dimensions, ownership and provenance through a typed FastAPI contract.
 
+![Architecture](https://raw.githubusercontent.com/oleglihvoinen/oleglihvoinen.github.io/main/assets/architecture/semantic-ai-data-agent.png)
+
 ## Architecture
 Business question → agent/orchestrator → semantic API → approved metric/dimension contract → governed query execution → Snowflake/dbt or Fabric assets → result + provenance.
 
