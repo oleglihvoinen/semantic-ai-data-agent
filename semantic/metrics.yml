@@ -1,0 +1,21 @@
+metrics:
+  - id: net_revenue
+    label: Net Revenue
+    description: Revenue after discounts and returns.
+    unit: currency
+    currency: EUR
+    aggregation: sum
+    expression: net_revenue
+    time_dimension: order_date
+    allowed_dimensions: [country, product_category, customer_segment]
+    owner: Finance
+  - id: active_customers
+    label: Active Customers
+    description: Distinct customers with at least one completed order in the selected period.
+    unit: customers
+    aggregation: count_distinct
+    expression: customer_id
+    filter: "order_status = 'COMPLETED'"
+    time_dimension: order_date
+    allowed_dimensions: [country, customer_segment]
+    owner: Commercial
