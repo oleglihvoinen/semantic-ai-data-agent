@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from .registry import MetricRegistry
+from .agent import build_tool_request
+from .evaluation import GoldenQuestion, evaluate
 
 app = FastAPI(title="Governed Semantic Data Agent API", version="1.0.0")
 registry = MetricRegistry()
@@ -44,3 +46,49 @@ def query_plan(req: QueryRequest):
         "owner": item["owner"],
         "provenance": "semantic/metrics.yml",
     }
+
+
+class AskRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=1000)
+
+@app.post("/api/v1/ask")
+def ask(req: AskRequest):
+    allowed = [m["id"] for m in registry.all()]
+    routed = build_tool_request(req.question, allowed)
+    if routed["status"] != "tool_call_ready":
+        return routed
+
+    arguments = routed["arguments"]
+    item = registry.get(arguments["metric_id"])
+    disallowed = [
+        d for d in arguments["dimensions"]
+        if d not in item.get("allowed_dimensions", [])
+    ]
+    if disallowed:
+        return {
+            "status": "clarification_required",
+            "reason": "dimension_not_approved_for_metric",
+            "disallowed_dimensions": disallowed,
+        }
+
+    return {
+        **routed,
+        "semantic_plan": {
+            "metric": arguments["metric_id"],
+            "dimensions": arguments["dimensions"],
+            "expression": item["expression"],
+            "aggregation": item["aggregation"],
+            "owner": item["owner"],
+            "provenance": "semantic/metrics.yml",
+        },
+        "execution_mode": "plan_only",
+    }
+
+@app.get("/api/v1/evaluation")
+def evaluation():
+    cases = [
+        GoldenQuestion("Show net revenue by country", "net_revenue", "tool_call_ready"),
+        GoldenQuestion("How many active customers by channel?", "active_customers", "tool_call_ready"),
+        GoldenQuestion("What changed yesterday?", None, "clarification_required"),
+    ]
+    return evaluate(cases, [m["id"] for m in registry.all()])
