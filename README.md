@@ -1,39 +1,35 @@
-# Governed Semantic AI Data Agent
+# Governed Semantic Layer + AI Data Agent
 
-A **governed semantic access layer for AI-driven analytics** that prevents unrestricted model access to warehouse structures and exposes only approved business metrics, dimensions, ownership and provenance through a typed FastAPI contract.
+A governed analytical-AI pattern that combines machine-readable metric contracts with **tool routing, ambiguity handling, evaluation and tamper-evident auditability**.
 
 ![Architecture](https://raw.githubusercontent.com/oleglihvoinen/oleglihvoinen.github.io/main/assets/architecture/semantic-ai-data-agent.png)
 
-## Summary
-
-The design places a formal semantic and governance boundary between natural-language requests and physical data models. AI can interpret user intent and invoke tools, but approved metric definitions, allowed dimensions and ownership rules determine what constitutes a valid analytical request.
-
 ## Architecture
 
-Business question → agent/orchestrator → semantic API → approved metric/dimension contract → governed query execution → Snowflake/dbt or Fabric assets → result + provenance.
+Business question → governed intent router → semantic policy → approved query plan → Snowflake/dbt or Fabric execution adapter → result + provenance.
 
-## Current implementation
+The language-model/agent layer is never authoritative for metric meaning.
 
-- YAML metric contracts for Net Revenue and Active Customers
-- FastAPI metric catalogue and lookup endpoints
-- Pydantic request validation
-- query-plan validation against allowed dimensions
-- explicit rejection of unknown metrics and unauthorized dimensions
-- provenance returned with approved query plans
-- automated API tests
-- Docker packaging
-- GitHub Actions test workflow
+## Implemented engineering depth
 
-## Governance model
+- YAML metric contracts
+- FastAPI metric catalogue and query-plan API
+- Pydantic validation
+- allowed-dimension enforcement
+- natural-language metric/dimension router
+- explicit clarification when a metric cannot be identified safely
+- governed `/api/v1/ask` tool-plan endpoint
+- execution remains plan-only in the public repository
+- golden-question evaluation harness with measurable pass rate
+- evaluation endpoint
+- tamper-evident hash-chained audit records
+- automated tests for routing, clarification, evaluation and audit integrity
+- Docker packaging and CI
 
-Metric definitions include business description, aggregation, expression, time dimension, allowed dimensions and owner. This makes the semantic layer the authority for business meaning rather than delegating metric interpretation to an LLM.
+## Governance principle
 
-## Enterprise hardening
+The agent may interpret intent, but it cannot invent a metric, dimension or expression. Approved semantic contracts remain the authority. If intent is ambiguous or a requested dimension is not approved, the system returns a clarification/rejection rather than silently generating SQL.
 
-A production deployment would add SSO/RBAC, row-level security, Snowflake/Fabric adapters, query compilation, policy enforcement, ambiguity handling, LLM tool calling, caching, audit logging, golden-question evaluation and observability.
+Warehouse adapters are intentionally separated from the public governance boundary.
 
-## Repository scope
-
-The implementation focuses on semantic contracts, API governance and query-plan validation. Warehouse execution adapters are intentionally separated so the governance boundary can remain stable across Snowflake/dbt or Microsoft Fabric backends.
-
-**Technologies:** Python · FastAPI · REST · Pydantic · YAML semantic contracts · Snowflake/dbt-ready metrics · Microsoft Fabric-ready semantics · LLM grounding · provenance · governance · Docker · CI
+**Technologies:** Python · FastAPI · Pydantic · YAML semantic contracts · governed tool calling · evaluation · audit chain · Snowflake/dbt-ready semantics · Microsoft Fabric-ready semantics · Docker · CI
